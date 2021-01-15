@@ -151,6 +151,11 @@ const copyRecord = {
         return Promise.reject(new Error('Record not found.'))
       }
 
+      const tgtRecordExist = await RecordModel.recordExist(targetName)
+      if (tgtRecordExist) {
+        return Promise.reject(new Error('Record name has already been taken.'))
+      }
+
       const srcRecord = await RecordModel.findOne({ name: sourceName })
       const tgtRecord = await new RecordModel({
         name: targetName,
