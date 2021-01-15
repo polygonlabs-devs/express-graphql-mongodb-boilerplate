@@ -4,13 +4,19 @@ require('@app/graphql/types')
 
 const { authMiddleware: middleware } = require('@app/middleware')
 const { userValidator: validator } = require('@app/validator')
-const { UserTC } = require('@app/module')
+const { UserTC, RecordTC } = require('@app/module')
 
 schemaComposer.Query.addFields({
-  user: UserTC.getResolver('user', [middleware.isAuth])
+  // queries for auth
+  user: UserTC.getResolver('user', [middleware.isAuth]),
+
+  // queries for records
+  record: RecordTC.getResolver('record'),
+  records: RecordTC.getResolver('records')
 })
 
 schemaComposer.Mutation.addFields({
+  // mutations for auth
   signIn: UserTC.getResolver('signIn', [middleware.isGuest, validator.signIn]),
   signUp: UserTC.getResolver('signUp', [middleware.isGuest, validator.signUp]),
   logout: UserTC.getResolver('logout', [middleware.isAuth]),
@@ -23,7 +29,13 @@ schemaComposer.Mutation.addFields({
     validator.changePassword
   ]),
   updateUser: UserTC.getResolver('updateUser', [middleware.isAuth, validator.updateUser]),
-  switchLocale: UserTC.getResolver('switchLocale', [middleware.isAuth])
+  switchLocale: UserTC.getResolver('switchLocale', [middleware.isAuth]),
+
+  // mutations for records
+  addRecord: RecordTC.getResolver('addRecord'),
+  updateRecord: RecordTC.getResolver('updateRecord'),
+  deleteRecord: RecordTC.getResolver('deleteRecord'),
+  copyRecord: RecordTC.getResolver('copyRecord')
 })
 
 const schema = schemaComposer.buildSchema()
